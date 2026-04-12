@@ -613,6 +613,27 @@ function LayoutEditorShell({ profile, onSave, onClose }) {
     return "default";
   };
 
+  const snapAllToGrid = () => {
+    let p = workingProfile;
+    let count = 0;
+    for (const w of wins) {
+      const newX = snapToGrid(w.x, gridSize);
+      const newY = snapToGrid(w.y, gridSize);
+      const newR = snapToGrid(w.x + w.w, gridSize);
+      const newB = snapToGrid(w.y + w.h, gridSize);
+      const newW = Math.max(gridSize, newR - newX);
+      const newH = Math.max(gridSize, newB - newY);
+      if (newX !== w.x || newY !== w.y || newW !== w.w || newH !== w.h) {
+        p = updateProfileBounds(p, w, { x: newX, y: newY, w: newW, h: newH });
+        count++;
+      }
+    }
+    if (count > 0) {
+      setWP(p);
+      setDirty(true);
+    }
+  };
+
   const handleSave = () => {
     const p = { ...workingProfile, Name: profileName };
     onSave(p);
@@ -682,6 +703,11 @@ function LayoutEditorShell({ profile, onSave, onClose }) {
               onClick={() => setGridSize(s)}
             >{s}px</button>
           ))}
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={snapAllToGrid}
+            title="Snap all windows to nearest grid lines"
+          >Snap All</button>
         </div>
 
         <div className="editor-separator" />
@@ -1047,7 +1073,7 @@ function App() {
       {profiles.length === 0 ? (
         <div className="app-welcome">
           <div className="sidebar-header">
-            <h1>CRC Profile Manager <span className="version-badge">v1.1</span></h1>
+            <h1>CRC Profile Manager <span className="version-badge">v1.2</span></h1>
             <p>Layout standardization for VATSIM CRC</p>
           </div>
           <WelcomeScreen onFilesLoaded={onLoaded} />
@@ -1055,7 +1081,7 @@ function App() {
       ) : (<>
         <div className="sidebar">
           <div className="sidebar-header">
-            <h1>CRC Profile Manager <span className="version-badge">v1.1</span></h1>
+            <h1>CRC Profile Manager <span className="version-badge">v1.2</span></h1>
             <p>Layout standardization for VATSIM CRC</p>
           </div>
           <div className="sidebar-list">

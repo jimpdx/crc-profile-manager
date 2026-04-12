@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2 — 2026-04-12
+
+### Added
+
+- **Snap All** — one-click button to align all four edges of every window to the nearest grid lines
+
+---
+
 ## v1.1 — 2026-04-12
 
 ### Added
