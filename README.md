@@ -2,6 +2,8 @@
 
 A browser-based tool for VATSIM controllers to manage their [CRC (Common RADAR Client)](https://crc.virtualnas.net) profiles — visualize window layouts, edit them visually, standardize across positions, and keep controller info text consistent.
 
+**Live at [crc.perflight.app](https://crc.perflight.app)**
+
 ## What it does
 
 CRC stores one JSON file per controller profile in `%LOCALAPPDATA%\CRC\Profiles`. If you control multiple positions or facilities, keeping those profiles consistent is tedious. This tool makes it easy.
