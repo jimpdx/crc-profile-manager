@@ -12,6 +12,7 @@
 - Layout editor help modal only shows once per browser session (remembered via sessionStorage)
 - "Copy Layout..." now skips the source selection step when a profile is already selected
 - Apply Layout modal now offers **Save** (apply without downloading) and **Save & Download (.zip)** as separate options
+- Welcome screen auto-detects Mac vs Windows and shows the appropriate file manager name and profile folder path
 
 ---
 
