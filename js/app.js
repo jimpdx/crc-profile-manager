@@ -10,7 +10,7 @@ const DEFAULT_FEEDBACK_URLS = {
   ZAU: "https://www.zauartcc.org/feedback",
   ZOB: "https://clevelandcenter.org/feedback",
   ZDV: "https://zdvartcc.org/feedback",
-  ZFW: "https://www.zfwartcc.net/feedback",
+  ZFW: "https://zfwartcc.net/feedback/create",
   ZHN: "https://vhcf.net/feedback/new",
   ZUA: "https://vhcf.net/feedback/new",
   ZHU: "https://houston.center/feedback",
@@ -906,6 +906,32 @@ function GitHubStars() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
+function isChromeBrowser() {
+  const ua = navigator.userAgent;
+  return /Chrome\//.test(ua) && !/Edg\/|OPR\//.test(ua);
+}
+
+function BrowserWarning() {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed || isChromeBrowser()) return null;
+  return (
+    <div className="browser-warning-overlay">
+      <div className="browser-warning">
+        <h2>Unsupported Browser</h2>
+        <p>
+          CRC Profile Manager is designed for <strong>Google Chrome</strong> and
+          may not work correctly in other browsers. The grid/layout editor in
+          particular has known issues in Safari and other non-Chrome browsers.
+        </p>
+        <p>Please switch to Google Chrome for the best experience.</p>
+        <button className="btn btn-primary" onClick={() => setDismissed(true)}>
+          Continue Anyway
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [profiles,    setProfiles] = useState([]);
   const [fileNameMap, setFNM]      = useState({});
@@ -1139,6 +1165,7 @@ function App() {
 
   return (
     <div className="app">
+      <BrowserWarning />
       {profiles.length === 0 ? (
         <div className="app-welcome">
           <div className="sidebar-header">

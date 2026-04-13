@@ -392,6 +392,45 @@ body {
   color: #f8fafc;
 }
 
+/* ── Browser Warning ── */
+
+.browser-warning-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.browser-warning {
+  background: #1e293b;
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 32px 40px;
+  max-width: 480px;
+  text-align: center;
+  color: #f8fafc;
+}
+
+.browser-warning h2 {
+  color: #f59e0b;
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+.browser-warning p {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.browser-warning .btn {
+  margin-top: 12px;
+}
+
 /* ── Toast ── */
 
 .toast {
