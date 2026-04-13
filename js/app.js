@@ -370,6 +370,13 @@ function WelcomeScreen({ onFilesLoaded }) {
         style={{ display: "none" }}
         onChange={e => onFilesLoaded(Array.from(e.target.files || []))}
       />
+
+      <div className="welcome-tip">
+        <strong>Tip:</strong> When you download edited profiles, save them
+        back to your <strong>CRC Profiles</strong> folder and overwrite the existing files
+        with the same name. Each profile has a unique filename that matches
+        the original.
+      </div>
     </div>
   );
 }
@@ -859,11 +866,12 @@ function App() {
   const [toast,       setToast]    = useState(null);
   const [editorId,    setEditorId] = useState(null);
   const [dirtyIds,    setDirtyIds] = useState(new Set());
+  const [dlTipShown,  setDLTip]   = useState(false);
   const browseRef = useRef(null);
 
-  const showToast = useCallback(m => {
+  const showToast = useCallback((m, duration = 3000) => {
     setToast(m);
-    setTimeout(() => setToast(null), 3000);
+    setTimeout(() => setToast(null), duration);
   }, []);
 
   const processFiles = useCallback(async files => {
@@ -905,7 +913,11 @@ function App() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setDirtyIds(prev => { const s = new Set(prev); s.delete(profile.Id); return s; });
-  }, [fileNameMap]);
+    if (!dlTipShown) {
+      setDLTip(true);
+      showToast("Save this file to your CRC Profiles folder, overwriting the existing file with the same name", 6000);
+    }
+  }, [fileNameMap, dlTipShown, showToast]);
 
   const downloadAllAsZip = useCallback(async () => {
     const zip = new JSZip();
