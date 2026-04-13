@@ -571,7 +571,7 @@ body {
   position: fixed;
   inset: 0;
   background: #0f172a;
-  z-index: 50;
+  z-index: 55;
   display: flex;
   flex-direction: column;
 }

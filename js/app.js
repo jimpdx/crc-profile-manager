@@ -306,9 +306,16 @@ function CopyModal({ source, targets, profiles, onClose, onApply }) {
           <button
             className="btn btn-primary"
             disabled={!copyLayout && !copyCI}
-            onClick={() => onApply({ copyLayout, copyControllerInfo: copyCI, feedbackUrls: urls })}
+            onClick={() => onApply({ copyLayout, copyControllerInfo: copyCI, feedbackUrls: urls, download: false })}
           >
-            Download Updated Profiles (.zip)
+            Save
+          </button>
+          <button
+            className="btn btn-primary"
+            disabled={!copyLayout && !copyCI}
+            onClick={() => onApply({ copyLayout, copyControllerInfo: copyCI, feedbackUrls: urls, download: true })}
+          >
+            Save &amp; Download (.zip)
           </button>
         </div>
       </div>
@@ -416,7 +423,7 @@ function LayoutEditorShell({ profile, onSave, onClose }) {
   const [isDirty, setDirty]     = useState(false);
   const [profileName, setPN]    = useState(profile.Name || "");
 
-  const [showHelp, setShowHelp] = useState(true);
+  const [showHelp, setShowHelp] = useState(() => !sessionStorage.getItem("editorHelpSeen"));
 
   // Grid & snap (independent toggles)
   const [gridVisible, setGridVis]  = useState(true);
@@ -827,7 +834,7 @@ function LayoutEditorShell({ profile, onSave, onClose }) {
                 <li>Click directly on any window to select and start dragging it</li>
               </ul>
               <p>Grid, Snap, and Boundary enforcement are on by default. Use the toolbar to adjust.</p>
-              <button className="btn btn-primary" onClick={() => setShowHelp(false)}>Got it</button>
+              <button className="btn btn-primary" onClick={() => { sessionStorage.setItem("editorHelpSeen", "1"); setShowHelp(false); }}>Got it</button>
             </div>
           </div>
         )}
@@ -1069,17 +1076,19 @@ function App() {
       updated.push({ data: u, filename: fileNameMap[tid] || `${tid}.json`, id: tid });
     }
 
-    const zip  = new JSZip();
-    for (const { data, filename } of updated) zip.file(filename, JSON.stringify(data, null, 2));
-    const blob = await zip.generateAsync({ type: "blob" });
-    const zu   = URL.createObjectURL(blob);
-    const za   = document.createElement("a");
-    za.href     = zu;
-    za.download = "crc-profiles-updated.zip";
-    document.body.appendChild(za);
-    za.click();
-    document.body.removeChild(za);
-    URL.revokeObjectURL(zu);
+    if (opts.download) {
+      const zip  = new JSZip();
+      for (const { data, filename } of updated) zip.file(filename, JSON.stringify(data, null, 2));
+      const blob = await zip.generateAsync({ type: "blob" });
+      const zu   = URL.createObjectURL(blob);
+      const za   = document.createElement("a");
+      za.href     = zu;
+      za.download = "crc-profiles-updated.zip";
+      document.body.appendChild(za);
+      za.click();
+      document.body.removeChild(za);
+      URL.revokeObjectURL(zu);
+    }
 
     setProfiles(prev => prev.map(p => {
       const m = updated.find(u => u.id === p.Id);
@@ -1089,7 +1098,10 @@ function App() {
     setMode("view");
     setSrcId(null);
     setTgtIds([]);
-    showToast(`Downloaded zip with ${updated.length} updated profile${updated.length !== 1 ? "s" : ""}`);
+    const count = updated.length;
+    showToast(opts.download
+      ? `Downloaded zip with ${count} updated profile${count !== 1 ? "s" : ""}`
+      : `Applied layout to ${count} profile${count !== 1 ? "s" : ""}`);
   }, [profiles, sourceId, targetIds, fileNameMap, showToast]);
 
   // ── Sidebar item click ──
@@ -1116,7 +1128,7 @@ function App() {
       {profiles.length === 0 ? (
         <div className="app-welcome">
           <div className="sidebar-header">
-            <h1>CRC Profile Manager <span className="version-badge">v1.2</span></h1>
+            <h1>CRC Profile Manager <span className="version-badge">v1.3</span></h1>
             <p>Layout standardization for VATSIM CRC</p>
           </div>
           <WelcomeScreen onFilesLoaded={onLoaded} />
@@ -1124,7 +1136,7 @@ function App() {
       ) : (<>
         <div className="sidebar">
           <div className="sidebar-header">
-            <h1>CRC Profile Manager <span className="version-badge">v1.2</span></h1>
+            <h1>CRC Profile Manager <span className="version-badge">v1.3</span></h1>
             <p>Layout standardization for VATSIM CRC</p>
           </div>
           <div className="sidebar-list">
@@ -1178,7 +1190,16 @@ function App() {
             </button>
 
             {mode === "view" && (
-              <button className="btn btn-success" onClick={() => { setMode("selectSource"); setSrcId(null); setTgtIds([]); }}>
+              <button className="btn btn-success" onClick={() => {
+                setTgtIds([]);
+                if (selectedId) {
+                  setSrcId(selectedId);
+                  setMode("selectTargets");
+                } else {
+                  setSrcId(null);
+                  setMode("selectSource");
+                }
+              }}>
                 Copy Layout...
               </button>
             )}
@@ -1272,7 +1293,7 @@ function App() {
         {toast && <div className="toast">{toast}</div>}
       </>)}
 
-      <GitHubStars />
+      {!editorId && <GitHubStars />}
     </div>
   );
 }

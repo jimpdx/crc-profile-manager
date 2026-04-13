@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.3 — 2026-04-12
+
+### Fixed
+
+- GitHub stars badge no longer overlaps Save/Close buttons in the layout editor (z-index fix)
+- GitHub stars badge is now hidden entirely while the layout editor is open
+
+### Changed
+
+- Layout editor help modal only shows once per browser session (remembered via sessionStorage)
+- "Copy Layout..." now skips the source selection step when a profile is already selected
+- Apply Layout modal now offers **Save** (apply without downloading) and **Save & Download (.zip)** as separate options
+
+---
+
 ## v1.2 — 2026-04-12
 
 ### Added
