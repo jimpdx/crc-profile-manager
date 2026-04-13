@@ -352,18 +352,45 @@ body {
   justify-content: space-between;
 }
 
-/* ── GitHub link ── */
+/* ── GitHub stars ── */
 
-.github-link {
+.github-stars {
   position: fixed;
-  top: 14px;
+  top: 12px;
   right: 16px;
-  color: #475569;
-  transition: color .15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #64748b;
+  text-decoration: none;
   z-index: 50;
-  line-height: 0;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all .2s ease;
 }
-.github-link:hover { color: #94a3b8; }
+.github-stars:hover {
+  color: #e2e8f0;
+  background: rgba(51,65,85,.4);
+  border-color: #334155;
+}
+.github-stars .star-icon {
+  color: #64748b;
+  transition: color .2s ease;
+}
+.github-stars:hover .star-icon {
+  color: #fbbf24;
+}
+.star-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: color .2s ease;
+}
+.github-stars:hover .star-count {
+  color: #f8fafc;
+}
 
 /* ── Toast ── */
 
