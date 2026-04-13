@@ -326,6 +326,7 @@ function CopyModal({ source, targets, profiles, onClose, onApply }) {
 function WelcomeScreen({ onFilesLoaded }) {
   const [dragOver, setDO] = useState(false);
   const fileRef = useRef(null);
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
 
   const onDrop = useCallback(async e => {
     e.preventDefault();
@@ -354,12 +355,25 @@ function WelcomeScreen({ onFilesLoaded }) {
       <div className={`welcome-drop${dragOver ? " drag-over" : ""}`}>
         <div className="welcome-drop-icon">&#128194;</div>
         <h2>Drop your CRC Profiles folder here</h2>
-        <p>
-          Open Windows Explorer, navigate to the path below,
-          and drag the entire <strong>Profiles</strong> folder
-          (or individual JSON files) into this window. Your location may vary.
-        </p>
-        <div className="welcome-path">%LOCALAPPDATA%\CRC\Profiles</div>
+        {isMac ? (
+          <>
+            <p>
+              Open Finder, navigate to the path below,
+              and drag the entire <strong>Profiles</strong> folder
+              (or individual JSON files) into this window. Your location may vary.
+            </p>
+            <div className="welcome-path">~/Library/Application Support/CRC/Profiles</div>
+          </>
+        ) : (
+          <>
+            <p>
+              Open Windows Explorer, navigate to the path below,
+              and drag the entire <strong>Profiles</strong> folder
+              (or individual JSON files) into this window. Your location may vary.
+            </p>
+            <div className="welcome-path">%LOCALAPPDATA%\CRC\Profiles</div>
+          </>
+        )}
       </div>
 
       <div className="welcome-divider">
